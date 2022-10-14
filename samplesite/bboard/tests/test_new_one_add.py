@@ -1,12 +1,15 @@
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
+from bboard.models import Rubric, Bb
 
 
-class MainFlowTests(StaticLiveServerTestCase):
+class NewOneAdd(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        Rubric.objects.create(name='Транспорт')
         cls.selenium = WebDriver()
 
     def test_add(self):
@@ -18,12 +21,13 @@ class MainFlowTests(StaticLiveServerTestCase):
         title.send_keys('Велосипед')
         content = self.selenium.find_element(By.NAME, 'content')
         content.send_keys('Велосипед как велосипед')
+        rubr = Select(self.selenium.find_element(By.NAME, 'rubric'))
+        rubr.select_by_value('1')
         next_button = self.selenium.find_element(By.NAME, 'submit_add')
         next_button.click()
         next_button = self.selenium.find_element(By.NAME, 'mainpage')
         next_button.click()
-        self.selenium.refresh()
         assert 'Велосипед' in self.selenium.page_source
-        self.selenium.close()
+        self.selenium.quit()
 
 
