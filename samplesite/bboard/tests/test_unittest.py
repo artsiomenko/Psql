@@ -12,3 +12,4 @@ class SimpleTest(TestCase):
         client = Client()
         response = client.get('/bboard/add/')
         self.assertEqual(response.status_code, 200)
+
